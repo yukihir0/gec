@@ -14,6 +14,8 @@ go get github.com/yukihir0/gec
 ## How to use
 
 ```
+text := "..."
+opt := gec.NewOption()
 content, title := gec.Analyse(text, opt)
 ```
 
