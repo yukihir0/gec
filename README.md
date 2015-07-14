@@ -1,4 +1,4 @@
-# gec
+# gec [![Build Status](https://travis-ci.org/yukihir0/gec.svg?branch=master)](https://travis-ci.org/yukihir0/gec)
 
 "gec" is port of ExtractContent.rb by golang.
 
