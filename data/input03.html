@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html
+  lang="ja"
+  data-avail-langs="ja en"
+
+  data-page="entry"
+  data-static-domain="https://blog.st-hatena.com"
+  data-blog="yukihir0.hatenablog.jp"
+  data-blog-name="タチコマ好きなエンジニアのブログ"
+  data-blogs-uri-base="http://yukihir0.hatenablog.jp"
+  data-globalheader-color="b"
+  data-globalheader-type="pc"
+  data-author="yukihir0"
+  data-version="b4418f9710e3db5110634da7c553c907"
+  data-blog-comments-top-is-new=""
+  data-device="pc"
+
+  
+
+  data-admin-domain="http://blog.hatena.ne.jp"
+
+  data-brand="hatenablog"
+
+
+  data-has-touch-view="1"
+  
+
+  itemscope
+   itemtype="http://schema.org/Article"
+
+  >
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    
+    
+    
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=7; IE=9; IE=10; IE=11" />
+    <title>Golangでクロスコンパイルをする。 - タチコマ好きなエンジニアのブログ</title>
+
+    
+
+    
+      <link rel="canonical" href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417"/>
+    
+
+    <meta itemprop="name" content="Golangでクロスコンパイルをする。 - タチコマ好きなエンジニアのブログ"/>
+    
+      <meta itemprop="image" content="https://blog.st-hatena.com/images/theme/og-image-1500.gif"/>
+    
+
+    <meta property="og:title" content="Golangでクロスコンパイルをする。 - タチコマ好きなエンジニアのブログ"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url" content="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417"/>
+    
+      
+      
+      
+      <meta property="og:image" content="https://blog.st-hatena.com/images/theme/og-image-1500.gif"/>
+    
+        <meta property="og:description" content="Golangでクロスコンパイルを試した時のメモ。 OSXでLinux64bitのバイナリをクロスコンパイルした。 クロスコンパイルできることは知っていたけれど、実際に動作すると感動する。 環境や方法は@Jxck_さんの記事がわかりやすかった。 Go のクロスコンパイル環境構築 - Qiita 環境構築 Homebrewを使っている場合は、インストール時にオプションを指定するだけでOK。 そうじゃない場合は、GOOSとGOARCHを指定して$GOROOT/src配下のmake.bashを実行する必要がある。 対応しているOSとアーキテクチャを実行しないといけないみたいなので、Homebrewが手…" />
+    <meta property="og:site_name" content="http://yukihir0.hatenablog.jp/"/>
+      <meta property="article:published_time" content="1423058057" />
+
+        <meta property="article:tag" content="golang" />        <meta name="twitter:card"  content="summary" />      <meta name="twitter:title" content="Golangでクロスコンパイルをする。 - タチコマ好きなエンジニアのブログ" />        <meta name="twitter:description" content="Golangでクロスコンパイルを試した時のメモ。 OSXでLinux64bitのバイナリをクロスコンパイルした。 クロスコンパイルできることは知っていたけれど、実際に動作すると感動する。 環境や方法は@Jxck_さんの記事がわかりやすかった。 Go のクロスコンパイル環境構築 - Qiita 環境構築 Homebrew…" />      <meta name="twitter:app:name:iphone" content="はてなブログアプリ" />
+      <meta name="twitter:app:id:iphone" content="583299321" />
+      <meta name="twitter:app:url:iphone" content="hatenablog:///open?uri=http%3A%2F%2Fyukihir0.hatenablog.jp%2Fentry%2F2015%2F02%2F04%2F225417" />      <meta name="twitter:site" content="@yukihir0" />        <meta name="google-site-verification" content="rHkPbR_okBJIrilVNi_j9PiDkqgh25_46TGiNHY0fwE">        <meta name="description" content="Golangでクロスコンパイルを試した時のメモ。 OSXでLinux64bitのバイナリをクロスコンパイルした。 クロスコンパイルできることは知っていたけれど、実際に動作すると感動する。 環境や方法は@Jxck_さんの記事がわかりやすかった。 Go のクロスコンパイル環境構築 - Qiita 環境構築 Homebrew…" />
+    
+<script type="text/javascript">
+// <!--
+
+if (~navigator.userAgent.indexOf('Mac OS X')) {
+  document.write('<style type="text/css">html, body { font-family: \x27Helvetica\x27, \x27Arial\x27, \x27ヒラギノ角ゴ Pro W3\x27, \x27Hiragino Kaku Gothic Pro\x27, sans-serif; } </style>');
+} else {
+  document.write('<style type="text/css">html, body { font-family: \x27Helvetica\x27, \x27Arial\x27, \x27メイリオ\x27, \x27Meiryo\x27, \x27MS PGothic\x27, sans-serif; } </style>');
+}
+
+// -->
+</script>
+
+<!--[if lt IE 9]>
+<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript" src="https://blog.st-hatena.com/js/vendor/excanvas/excanvas.js?version=b4418f9710e3db5110634da7c553c907"></script>
+<![endif]-->
+
+
+
+
+    <link rel="shortcut icon" href="https://blog.st-hatena.com/images/favicon.ico">
+    <link rel="icon" sizes="192x192" href="https://blog.st-hatena.com/images/common/meta-icon-global.png">
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="http://yukihir0.hatenablog.jp/feed"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS2.0" href="http://yukihir0.hatenablog.jp/rss"/>
+    <link rel="alternate" type="application/json+oembed" href="http://hatenablog.com/oembed?url=http%3A%2F%2Fyukihir0.hatenablog.jp%2Fentry%2F2015%2F02%2F04%2F225417&amp;format=json" title="oEmbed Profile of Golangでクロスコンパイルをする。"/>
+    <link rel="alternate" type="text/xml+oembed" href="http://hatenablog.com/oembed?url=http%3A%2F%2Fyukihir0.hatenablog.jp%2Fentry%2F2015%2F02%2F04%2F225417&amp;format=xml" title="oEmbed Profile of Golangでクロスコンパイルをする。"/>
+      <link rel="author" href="http://www.hatena.ne.jp/yukihir0/">
+
+      <link rel="stylesheet" type="text/css" href="https://blog.st-hatena.com/.shared.css:b4418f9710e3db5110634da7c553c907:/css/theme/base.css,/css/prettify.css,/css/globalheader.css?version=b4418f9710e3db5110634da7c553c907"/>
+      <link rel="stylesheet" type="text/css" href="http://blog.hatena.ne.jp/-/blog_style/12704346814673850942/286d1ca7c26364511166a14f5dd0112dbe82bde8"/>    <script>    </script>
+
+    
+    <style>
+      div#google_afc_user,
+      div#google_afc_user_container_0,
+      div#google_afc_user_container_1,
+      div#google_afc_user_container_2,
+      div#google_afc_user_container_3,
+      div#google_afc_user_container_4,
+      div#google_afc_user_container_5,
+      div.google_afc_image,
+      div.google_afc_blocklink {
+          display: block !important;
+      }
+    </style>
+
+    
+  </head>
+
+  <body class="page-entry      category-golang  ">
+    <!-- Google Universal Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-29716941-6', 'auto', {'name': 'HatenaBlogTracker'});
+  ga('HatenaBlogTracker.require', 'displayfeatures');
+  ga('HatenaBlogTracker.send', 'pageview');
+
+</script>
+<!-- End Google Universal Analytics -->
+
+    
+    <div id="header-container">
+     <div id="sp-suggest" style="display: none;"><a id="sp-suggest-link" href="#">スマートフォン用の表示で見る</a></div>
+    </div>
+
+    <div class="select_star_button_container" style="display: none;">
+      <img src="https://blog.st-hatena.com/images/theme/hatena-star-quote-box.png?version=b4418f9710e3db5110634da7c553c907" title="引用スターをつける" class="select_star_button" />
+      <img src="https://blog.st-hatena.com/images/theme/hatena-star-quote-star.png?version=b4418f9710e3db5110634da7c553c907" title="引用スターをつける" class="select_star_button select_star_star">
+    </div>
+
+    <div class="message-box" id="select-star-message-box" style="display: none;">
+      スターをつけました
+    </div>
+
+    <div id="globalheader-container" >
+  <iframe id="globalheader" height="37" frameborder="0" allowTransparency="true"></iframe>
+</div>
+
+
+    
+    <div id="hidden-subscribe-button">
+      <div class="hatena-follow-button-box btn-subscribe js-hatena-follow-button-box"
+  
+  >
+
+  <a href="#" class="hatena-follow-button js-hatena-follow-button">
+    <span class="subscribing">
+      <span class="foreground">読者です</span>
+      <span class="background">読者をやめる</span>
+    </span>
+    <span class="unsubscribing" data-track-name="profile-widget-subscribe-button" data-track-once>
+      <span class="foreground">読者になる</span>
+      <span class="background">読者になる</span>
+    </span>
+  </a>
+  <div class="subscription-count-box js-subscription-count-box">
+    <i></i>
+    <u></u>
+    <span class="subscription-count js-subscription-count">
+    </span>
+  </div>
+</div>
+
+    </div>
+
+    <div id="container">
+      <div id="container-inner">
+        <header id="blog-title" data-brand="hatenablog">
+  <div id="blog-title-inner" >
+    <h1 id="title"><a href="http://yukihir0.hatenablog.jp/">タチコマ好きなエンジニアのブログ</a></h1>
+    
+  </div>
+</header>
+
+        
+        
+        
+
+
+
+<div id="content" class="hfeed"
+  
+  >
+  <div id="content-inner">
+    <div id="wrapper">
+      <div id="main">
+        <div id="main-inner">
+          
+            
+            <!-- google_ad_section_start -->
+            <!-- rakuten_ad_target_begin -->
+            
+              
+                <article class="entry hentry js-entry-article date-first autopagerize_page_element chars-800 words-100 mode-markdown entry-odd" id="entry-8454420450082472679" data-keyword-campaign="" data-uuid="8454420450082472679">
+  <div class="entry-inner">
+    <header class="entry-header">
+      <div class="date first">
+        <a href="http://yukihir0.hatenablog.jp/entries/2015/02/04" rel="nofollow">
+          <time pubdate datetime="2015-02-04T13:54:17Z" title="2015-02-04T13:54:17Z">
+            <span class="date-year">2015</span><span class="hyphen">-</span><span class="date-month">02</span><span class="hyphen">-</span><span class="date-day">04</span>
+          </time>
+        </a>
+      </div>
+      <h1 class="entry-title">
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417" class="entry-title-link bookmark">Golangでクロスコンパイルをする。</a>
+      </h1>
+      
+      
+        <div class="categories">
+          
+          <a href="http://yukihir0.hatenablog.jp/archive/category/golang">golang</a>
+          
+        </div>
+      
+      
+
+      
+    </header>
+    <div class="entry-content">
+
+      
+        <p><a class="keyword" href="http://d.hatena.ne.jp/keyword/Golang">Golang</a>でク<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%ED%A5%B9%A5%B3%A5%F3">ロスコン</a>パイルを試した時のメモ。<br/>
+<a class="keyword" href="http://d.hatena.ne.jp/keyword/OSX">OSX</a>でLinux64bitのバイナリをク<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%ED%A5%B9%A5%B3%A5%F3">ロスコン</a>パイルした。<br/>
+ク<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%ED%A5%B9%A5%B3%A5%F3">ロスコン</a>パイルできることは知っていたけれど、実際に動作すると感動する。<br/>
+環境や方法は@Jxck_さんの記事がわかりやすかった。</p>
+
+<p><iframe src="//hatenablog-parts.com/embed?url=http%3A%2F%2Fqiita.com%2FJxck_%2Fitems%2F02185f51162e92759ebe" title="Go のクロスコンパイル環境構築 - Qiita" class="embed-card embed-webcard" scrolling="no" frameborder="0" style="width: 100%; height: 155px; max-width: 500px; margin: 10px 0px;"><a href="http://qiita.com/Jxck_/items/02185f51162e92759ebe">Go のクロスコンパイル環境構築 - Qiita</a></iframe></p>
+
+<h3>環境構築</h3>
+
+<p>Homebrewを使っている場合は、インストール時にオプションを指定するだけでOK。<br/>
+そうじゃない場合は、GOOSとGOARCHを指定して$GOROOT/src配下のmake.<a class="keyword" href="http://d.hatena.ne.jp/keyword/bash">bash</a>を実行する必要がある。<br/>
+対応しているOSと<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%A2%A1%BC%A5%AD%A5%C6%A5%AF%A5%C1%A5%E3">アーキテクチャ</a>を実行しないといけないみたいなので、Homebrewが手軽で良いと思う。</p>
+
+<pre class="code" data-lang="" data-unlink>% brew install go --cross-compile-all</pre>
+
+
+<h3>ク<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%ED%A5%B9%A5%B3%A5%F3">ロスコン</a>パイル</h3>
+
+<p>GOOSとGOARCHを指定してgo buildをク<a class="keyword" href="http://d.hatena.ne.jp/keyword/%A5%ED%A5%B9%A5%B3%A5%F3">ロスコン</a>パイルする。<br/>
+すごく簡単。</p>
+
+<pre class="code" data-lang="" data-unlink>% GOOS=linux GOARCH=amd64 go build hoge.go</pre>
+
+
+      
+    </div>
+    <footer class="entry-footer">
+      <p class="entry-footer-section">
+        <span class="author vcard"><span class="fn" data-load-nickname="1" data-user-name="yukihir0">yukihir0</span></span>
+        <span class="entry-footer-time"><a href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417"><time data-relative datetime="2015-02-04T13:54:17Z" title="2015-02-04T13:54:17Z" pubdate class="updated">2015-02-04 22:54</time></a></span>
+      </p>
+
+      
+        <div class="hatena-star-container">
+        </div>
+        <div class="hatena-star-metadata" style="display: none">
+          <a class="hatena-star-permalink" href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417">Golangでクロスコンパイルをする。</a>
+        </div>
+      
+
+      
+<div class="social-buttons">
+  
+  
+    <div class="social-button-item">
+      <a href="http://b.hatena.ne.jp/entry/http://yukihir0.hatenablog.jp/entry/2015/02/04/225417" class="hatena-bookmark-button" data-hatena-bookmark-layout="vertical-balloon" data-hatena-bookmark-lang="ja" title="この記事をはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="この記事をはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    </div>
+  
+  
+    <div class="social-button-item">
+      <div class="fb-share-button" data-layout="box_count" data-href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417"></div>
+    </div>
+  
+  
+    <div class="social-button-item">
+      <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417" data-count="vertical" data-text="Golangでクロスコンパイルをする。 - タチコマ好きなエンジニアのブログ" data-lang="ja">Tweet</a>
+    </div>
+  
+  
+  
+  
+  
+</div>
+
+
+      
+        
+          
+          <div class="google-afc-image test-google-rectangle-ads ">
+            
+            
+              <script>
+  var hatenadfp = hatenadfp || {};
+  hatenadfp.adUnits = hatenadfp.adUnits || [];
+  hatenadfp.adUnits.push(
+    
+      { unitName: 'blog_user', size: [[300, 250], [336, 280]], divId: 'google_afc_user_container_0', allowContentMatch: true }
+    
+  );
+  hatenadfp.isNGContent = false;
+  
+</script>
+
+              <div id="google_afc_user_container_0" class="google_afc_blocklink2_5 google_afc_boder"></div>
+              
+                <a href="http://blog.hatena.ne.jp/guide/pro" class="open-pro-modal" data-guide-pro-modal-ad-url="http://hatenablog.com/guide/pro/modal/ad">広告を非表示にする</a>
+              
+              
+            
+          </div>
+        
+      
+
+      <div class="customized-footer">
+
+        
+
+          
+
+          
+
+          
+        
+      </div>
+
+    </footer>
+  </div>
+</article>
+
+                
+
+                
+                  
+                  
+                  <div class="permalink pager">
+                    
+                      
+                      <span class="pager-prev">
+                        <a href="http://yukihir0.hatenablog.jp/entry/2015/02/16/171317" rel="prev">
+                          <span class="pager-arrow">« </span>
+                          ServerspecのDockerバックエンドでコンテ…
+                        </a>
+                      </span>
+                    
+                    
+                      
+                      <span class="pager-next">
+                        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/27/192800" rel="next">
+                          Golangでバンディットアルゴリズムを実装…
+                          <span class="pager-arrow"> »</span>
+                        </a>
+                      </span>
+                    
+                  </div>
+                
+
+              
+            
+            <!-- rakuten_ad_target_end -->
+            <!-- google_ad_section_end -->
+
+            
+          
+        </div>
+      </div>
+
+      
+      <aside id="box1">
+        <div id="box1-inner">
+        </div>
+      </aside>
+
+    </div><!-- #wrapper -->
+
+    <aside id="box2">
+  <div id="box2-inner">
+    
+      
+
+<div class="hatena-module hatena-module-profile">
+  <div class="hatena-module-title">
+    プロフィール
+  </div>
+  <div class="hatena-module-body">
+    
+    <a href="http://yukihir0.hatenablog.jp/about" class="profile-icon-link">
+      <img src="http://cdn1.www.st-hatena.com/users/yu/yukihir0/profile.gif?1413285010"
+      alt="id:yukihir0" class="profile-icon" />
+    </a>
+    
+
+    
+    <span class="id">
+      <a href="http://yukihir0.hatenablog.jp/about" class="hatena-id-link"><span data-load-nickname="1" data-user-name="yukihir0">id:yukihir0</span></a>
+      
+  
+    
+    
+  
+
+
+    </span>
+    
+
+    
+
+    
+      <div class="hatena-follow-button-box btn-subscribe js-hatena-follow-button-box"
+  
+  >
+
+  <a href="#" class="hatena-follow-button js-hatena-follow-button">
+    <span class="subscribing">
+      <span class="foreground">読者です</span>
+      <span class="background">読者をやめる</span>
+    </span>
+    <span class="unsubscribing" data-track-name="profile-widget-subscribe-button" data-track-once>
+      <span class="foreground">読者になる</span>
+      <span class="background">読者になる</span>
+    </span>
+  </a>
+  <div class="subscription-count-box js-subscription-count-box">
+    <i></i>
+    <u></u>
+    <span class="subscription-count js-subscription-count">
+    </span>
+  </div>
+</div>
+
+    
+
+    
+
+    
+
+    
+    <div class="hatena-follow-button-box btn-twitter">
+      <a href="https://twitter.com/yukihir0" class="twitter-follow-button" data-show-count="false" data-lang="ja">
+        @yukihir0をフォロー
+      </a>
+    </div>
+    
+  </div>
+</div>
+
+    
+      <div class="hatena-module hatena-module-links">
+  <div class="hatena-module-title">
+    リンク
+  </div>
+  <div class="hatena-module-body">
+    <ul class="hatena-urllist">
+      
+        <li>
+          <a href="https://github.com/yukihir0">GitHub</a>
+        </li>
+      
+        <li>
+          <a href="https://twitter.com/yukihir0">Twitter</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+    
+      <div class="hatena-module hatena-module-search-box">
+  <div class="hatena-module-title">
+    検索
+  </div>
+  <div class="hatena-module-body">
+    <form class="search-form" role="search" action="http://yukihir0.hatenablog.jp/search" method="get">
+      <input type="text" name="q" class="search-module-input" value="" placeholder="ブログ内検索" required>
+      <input type="submit" value="検索" class="search-module-button" />
+    </form>
+  </div>
+</div>
+
+    
+      <div class="hatena-module hatena-module-recent-entries ">
+  <div class="hatena-module-title">
+    <a href="http://yukihir0.hatenablog.jp/archive">
+      最新記事
+    </a>
+  </div>
+  <div class="hatena-module-body">
+    <ul class="recent-entries hatena-urllist ">
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/07/05/154626" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">GolangでHTTPサーバのモックを使ってテストを実行する。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/02/16/171317" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">ServerspecのDockerバックエンドでコンテナをテストする。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/02/04/225417" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">Golangでクロスコンパイルをする。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/27/192800" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">Golangでバンディットアルゴリズムを実装した。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/20/224449" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">GolangでRSSをパースする。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/18/164446" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">GolangでMeCabを使う。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/15/201446" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">GolangでSVMを実装した。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/14/202210" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">Golangでパーセプトロンを実装した。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/12/140511" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">本文抽出モジュールExtractContentのGolang版を作った。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+    
+    <li class="urllist-item recent-entries-item">
+      <div class="urllist-item-inner recent-entries-item-inner">
+        
+        
+        <a href="http://yukihir0.hatenablog.jp/entry/2015/01/07/194605" class="urllist-title-link recent-entries-title-link          urllist-title recent-entries-title        ">GolangでネストしたMapを使う。        </a>
+        
+        
+
+              </div>
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+    
+      
+
+<div class="hatena-module hatena-module-archive" data-archive-type="default" data-archive-url="http://yukihir0.hatenablog.jp/archive">
+  <div class="hatena-module-title">
+    <a href="http://yukihir0.hatenablog.jp/archive">月別アーカイブ</a>
+  </div>
+  <div class="hatena-module-body">
+  </div>
+</div>
+
+    
+    
+  </div>
+</aside>
+
+  </div>
+</div>
+
+
+
+
+  <script type="text/javascript" src="http://b.hatena.ne.jp/js/hatena_dfp2.js"></script>
+
+
+
+        
+      </div>
+    </div>
+
+    
+      <footer id="footer" data-brand="hatenablog">
+  <div id="footer-inner">
+    <address>
+      
+      <a href="http://yukihir0.hatenablog.jp/about"><img src="http://cdn1.www.st-hatena.com/users/yu/yukihir0/profile.gif" width="16" height="16" alt=""/>
+        <span data-load-nickname="1" data-user-name="yukihir0">yukihir0</span>
+      </a>
+    </address>
+    <p class="services">Powered by <a href="http://hatenablog.com/">Hatena Blog</a></p>
+  </div>
+</footer>
+
+    
+
+    
+
+    
+      <script src="https://s.hatena.ne.jp/js/HatenaStar.js"></script>
+    
+
+    <script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+  {"parsetags": "explicit"}
+</script>
+<script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+
+<script type="text/javascript" src="http://blog.hatena.ne.jp/js?version=b4418f9710e3db5110634da7c553c907"></script>
+<script type="text/javascript" src="http://blog.hatena.ne.jp/js/texts-ja.js?version=b4418f9710e3db5110634da7c553c907"></script>
+
+
+  <script type="text/javascript">Hatena.Diary.loadGlobalHeader()</script>
+
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+
+
+
+
+
+    
+      <div id="fb-root"></div>
+      <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&appId=719729204785177&version=v2.0";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+    
+
+    
+       <script id="google-analytics-script" type="text/javascript">
+var _gaq = _gaq || [];
+
+(function($){
+
+  // 現在のドメイン
+  
+    
+    
+      
+      var current_domain = "hatenablog.jp".split(":")[0];
+    
+  
+
+  
+    _gaq.push(['_setAccount', 'UA-42934018-1']);
+    _gaq.push(['_trackPageview']);
+  
+
+  
+
+   
+   _gaq.push(['all._setAccount', 'UA-7855606-1']);
+   _gaq.push(['all._setDomainName', current_domain]);
+   _gaq.push(['all._setSampleRate', '10']);
+   _gaq.push(['all._trackPageview']);
+
+  
+    _gaq.push(['a._setAccount', 'UA-29716941-5']);
+    _gaq.push(['a._setDomainName', current_domain]);
+    _gaq.push(['a._setCustomVar', 1, 'PageId', document.documentElement.getAttribute('data-page'), 3 /* page-level */]);
+      var keywordCampaigns = [];
+      $('.js-entry-article').each(function (index, element) {
+        var keywords = $(element).data('keywordCampaign').split(' ');
+        keywords = _.filter(keywords, function (keyword) { return keyword.length > 0 });
+        keywordCampaigns = keywordCampaigns.concat(keywords);
+      });
+      if (keywordCampaigns.length > 0) {
+        _gaq.push(['a._setCustomVar', 3, 'KeywordCampaign', keywordCampaigns[0], 3 /* page-level */]);
+      }
+      _gaq.push(['a._trackPageview']);
+  
+    _gaq.push(['b._setAccount', 'UA-29716941-2']);
+    _gaq.push(['b._setDomainName', current_domain]);
+    _gaq.push(['b._setCustomVar', 1, 'PageId', document.documentElement.getAttribute('data-page'), 3 /* page-level */]);
+      var keywordCampaigns = [];
+      $('.js-entry-article').each(function (index, element) {
+        var keywords = $(element).data('keywordCampaign').split(' ');
+        keywords = _.filter(keywords, function (keyword) { return keyword.length > 0 });
+        keywordCampaigns = keywordCampaigns.concat(keywords);
+      });
+      if (keywordCampaigns.length > 0) {
+        _gaq.push(['b._setCustomVar', 3, 'KeywordCampaign', keywordCampaigns[0], 3 /* page-level */]);
+      }
+      _gaq.push(['b._trackPageview']);
+  
+
+  $(function () {
+      $(document).delegate('[data-track-event="click"]', 'click', function () {
+          
+          _gaq.push([ 'a._trackEvent', 'Blogs', 'Click', this.getAttribute('data-track-key') ]);
+          
+          _gaq.push([ 'b._trackEvent', 'Blogs', 'Click', this.getAttribute('data-track-key') ]);
+          
+      });
+  });
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  var available_domains = ["blog.hatena.ne.jp"];
+  
+    available_domains.push("hatenablog.com".split(":")[0]);
+  
+    available_domains.push("hatenablog.jp".split(":")[0]);
+  
+    available_domains.push("hateblo.jp".split(":")[0]);
+  
+    available_domains.push("hatenadiary.com".split(":")[0]);
+  
+    available_domains.push("hatenadiary.jp".split(":")[0]);
+  
+  $('a').on('click', function() {
+    // 同じドメインならスキップ
+    if ( !this.hostname || this.hostname.indexOf(current_domain) != -1 ) return;
+
+    var cross_domain = false;
+    for (var i = 0, len = available_domains.length; i < len; i++) {
+      if (this.hostname.indexOf(available_domains[i]) != -1) cross_domain = true;
+    }
+    if ( cross_domain ) {
+      
+      _gaq.push(['a._link', this.href]);
+      
+      _gaq.push(['b._link', this.href]);
+      
+    }
+  });
+
+})(jQuery);
+</script>
+
+       
+
+
+    
+
+  </body>
+</html>
+

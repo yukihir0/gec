@@ -1,0 +1,14 @@
+Golangでクロスコンパイルを試した時のメモ。
+OSXでLinux64bitのバイナリをクロスコンパイルした。
+クロスコンパイルできることは知っていたけれど、実際に動作すると感動する。
+環境や方法は@Jxck_さんの記事がわかりやすかった。
+Go のクロスコンパイル環境構築 - Qiita
+環境構築
+Homebrewを使っている場合は、インストール時にオプションを指定するだけでOK。
+そうじゃない場合は、GOOSとGOARCHを指定して$GOROOT/src配下のmake.bashを実行する必要がある。
+対応しているOSとアーキテクチャを実行しないといけないみたいなので、Homebrewが手軽で良いと思う。
+% brew install go --cross-compile-all
+クロスコンパイル
+GOOSとGOARCHを指定してgo buildをクロスコンパイルする。
+すごく簡単。
+% GOOS=linux GOARCH=amd64 go build hoge.go

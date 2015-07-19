@@ -1,62 +1,65 @@
 package gec
 
 import (
+	"io/ioutil"
+	"strings"
 	"testing"
 )
 
 func TestAnalyse(t *testing.T) {
-	docs := []string{
-		"<html><head><title>hoge</title></head><frameset></frameset></html>",
-		"<html><head><title>hoge</title><meta http-equiv=\"refresh\" content=\"5;URL=http://www.example.com\"></head></html>",
-		"<html><head><title>fuga</title></head><body></body></html>",
-		"<html><head><title>fuga</title></head><body><!-- google_ad_section_start -->a<!-- google_ad_section_end --><!-- google_ad_section_start -->b<!-- google_ad_section_end --></body></html>",
-		"<html><head><title>fuga</title></head><body><h1>fuga</h1><h2>fuga</h2></body></html>",
-	}
-	expecteds := [][]string{
-		[]string{"", "hoge"},
-		[]string{"", "hoge"},
-		[]string{"", "fuga"},
-		[]string{"", "fuga"},
-		[]string{"", "fuga"},
+	inputs := []string{
+		"./data/input01.html",
+		"./data/input02.html",
+		"./data/input03.html",
+		"./data/input04.html",
+		"./data/input05.html",
+		"./data/input06.html",
+		"./data/input07.html",
+		"./data/input08.html",
 	}
 
-	for i, _ := range docs {
-		content, title := Analyse(docs[i], nil)
-		if content != expecteds[i][0] {
-			t.Errorf("expected %v, but got %v", expecteds[i][0], content)
-		}
-
-		if title != expecteds[i][1] {
-			t.Errorf("expected %v, but got %v", expecteds[i][1], title)
-		}
+	docs := []string{}
+	for _, input := range inputs {
+		html, _ := ioutil.ReadFile(input)
+		docs = append(docs, string(html))
 	}
-}
 
-func TestAnalyseWithOption(t *testing.T) {
+	contents := []string{
+		"./data/expected_content01.html",
+		"./data/expected_content02.html",
+		"./data/expected_content03.html",
+		"./data/expected_content04.html",
+		"./data/expected_content05.html",
+		"./data/expected_content06.html",
+		"./data/expected_content07.html",
+		"./data/expected_content08.html",
+	}
+	titles := []string{
+		"./data/expected_title01.html",
+		"./data/expected_title02.html",
+		"./data/expected_title03.html",
+		"./data/expected_title04.html",
+		"./data/expected_title05.html",
+		"./data/expected_title06.html",
+		"./data/expected_title07.html",
+		"./data/expected_title08.html",
+	}
+	expecteds := [][]string{}
+	for i, _ := range contents {
+		content, _ := ioutil.ReadFile(contents[i])
+		title, _ := ioutil.ReadFile(titles[i])
+		expecteds = append(expecteds, []string{string(content), strings.TrimRight(string(title), "\n")})
+	}
+
 	opt := NewOption()
-	docs := []string{
-		"<html><head><title>hoge</title></head><frameset></frameset></html>",
-		"<html><head><title>hoge</title><meta http-equiv=\"refresh\" content=\"5;URL=http://www.example.com\"></head></html>",
-		"<html><head><title>fuga</title></head><body></body></html>",
-		"<html><head><title>fuga</title></head><body><!-- google_ad_section_start -->a<!-- google_ad_section_end --><!-- google_ad_section_start -->b<!-- google_ad_section_end --></body></html>",
-		"<html><head><title>fuga</title></head><body><h1>fuga</h1><h2>fuga</h2></body></html>",
-	}
-	expecteds := [][]string{
-		[]string{"", "hoge"},
-		[]string{"", "hoge"},
-		[]string{"", "fuga"},
-		[]string{"", "fuga"},
-		[]string{"", "fuga"},
-	}
-
 	for i, _ := range docs {
 		content, title := Analyse(docs[i], opt)
 		if content != expecteds[i][0] {
-			t.Errorf("expected %v, but got %v", expecteds[i][0], content)
+			t.Errorf("expected %s, but got %s", expecteds[i][0], content)
 		}
 
 		if title != expecteds[i][1] {
-			t.Errorf("expected %v, but got %v", expecteds[i][1], title)
+			t.Errorf("expected %s, but got %s", expecteds[i][1], title)
 		}
 	}
 }

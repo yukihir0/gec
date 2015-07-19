@@ -1,0 +1,61 @@
+ServerspecでDockerコンテナをテストするのにDockerバックエンドを利用してみました。
+Dockerコンテナ内にSSHDを立てたくなかったので、SSHバックエンドではなくDockerバックエンドでテストを実行したかったのですが、Web上にもあまり情報がなかったのでメモしておきます。
+DockerバックエンドについてはServerspec本の中で紹介されています。
+DockerバックエンドはDocker Remote APIを利用してテストを実行しているようです。
+ディレクトリ構成
+.
+Dockerfile
+Gemfile
+Gemfile.lock
+spec
+nginx_spec.rb
+spec_helper.rb
+docker-api gem
+Dockerバックエンドがdocker-api gemに依存しているので、bundlerなどでインストールします。
+swipely/docker-api
+% vi Gemfile
+source "https://rubygems.org"
+gem "rspec"
+gem "serverspec"
+gem "docker-api"
+% bundle
+spec_helper
+spec_helperにDockerバックエンドの設定を追加します。 
+docker_urlにdocker remote apiのURLを指定します。
+boot2dockerを利用しているのでENV["DOCKER_HOST"]を指定しています。
+docker_imageにテスト対象のコンテナを指定します。
+Docker Remote APIがSSLを利用するようになったみたいなのですが、SSLの設定を追加しても動かなかったので無効化しています。
+% vi spec/spec_helper.rb
+require "docker"
+require "serverspec"
+set :backend, :docker
+set :docker_url, ENV["DOCKER_HOST"]
+set :docker_image, "yukihir0/serverspec_docker"
+# TODO https://github.com/swipely/docker-api/issues/202
+Excon.defaults[:ssl_verify_peer] = false
+テストコード作成
+SSHバックエンドの場合と同様にテストを記述します。
+% vi spec/nginx_spec.rb
+require "spec_helper"
+describe package('nginx') do
+it { should be_installed }
+end
+Dockerコンテナ作成
+テスト対象のDockerコンテナを作成します。
+% vi Dockerfile
+FROM centos:7
+MAINTAINER "yukihir0"
+RUN yum update -y && \
+rpm --import http://nginx.org/keys/nginx_signing.key && \
+yum install -y http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm && \
+yum install -y nginx
+EXPOSE 80
+ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
+% docker build -t yukihir0/serverspec_docker
+テスト実行
+Serverspecでテストを実行します。
+テストを実行する度に、コンテナ実行>テスト実行>コンテナ破棄されている様子が見れて楽しいです。
+% bundle exec rspec
+まとめ
+Dockerバックエンドを利用することで、Dockerコンテナ内にSSHDを立てなくてもServerspecでテストを実行することができます。
+Dockerコンテナでもどんどんテストを書きましょう。
