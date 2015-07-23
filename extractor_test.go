@@ -6,7 +6,7 @@ import (
 
 func TestExtractTitle(t *testing.T) {
 	opt := NewOption()
-	extractor := NewExtractor(opt)
+	extractor := newExtractor(opt)
 
 	actuals := []string{
 		extractor.ExtractTitle(""),
@@ -17,7 +17,7 @@ func TestExtractTitle(t *testing.T) {
 		"hoge",
 	}
 
-	for i, _ := range actuals {
+	for i := range actuals {
 		if actuals[i] != expecteds[i] {
 			t.Errorf("expected %v, but got %v", expecteds[i], actuals[i])
 		}
@@ -26,7 +26,7 @@ func TestExtractTitle(t *testing.T) {
 
 func TestExtractContent(t *testing.T) {
 	opt := NewOption()
-	extractor := NewExtractor(opt)
+	extractor := newExtractor(opt)
 
 	actuals := []string{
 		extractor.ExtractContent(""),
@@ -37,7 +37,7 @@ func TestExtractContent(t *testing.T) {
 		"",
 	}
 
-	for i, _ := range actuals {
+	for i := range actuals {
 		if actuals[i] != expecteds[i] {
 			t.Errorf("expected %v, but got %v", expecteds[i], actuals[i])
 		}

@@ -45,14 +45,14 @@ func TestAnalyse(t *testing.T) {
 		"./data/expected_title08.html",
 	}
 	expecteds := [][]string{}
-	for i, _ := range contents {
+	for i := range contents {
 		content, _ := ioutil.ReadFile(contents[i])
 		title, _ := ioutil.ReadFile(titles[i])
 		expecteds = append(expecteds, []string{string(content), strings.TrimRight(string(title), "\n")})
 	}
 
 	opt := NewOption()
-	for i, _ := range docs {
+	for i := range docs {
 		content, title := Analyse(docs[i], opt)
 		if content != expecteds[i][0] {
 			t.Errorf("expected %s, but got %s", expecteds[i][0], content)

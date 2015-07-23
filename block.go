@@ -1,10 +1,10 @@
 package gec
 
-type Block struct {
+type block struct {
 	Text  string
 	Score float64
 }
 
-func NewBlock(text string, score float64) (b *Block) {
-	return &Block{Text: text, Score: score}
+func newBlock(text string, score float64) (b *block) {
+	return &block{Text: text, Score: score}
 }

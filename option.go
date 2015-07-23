@@ -4,6 +4,7 @@ import (
 	"regexp"
 )
 
+// Option represents extract options
 type Option struct {
 	Threashold        float64        // 本文と見なすスコアの閾値
 	MinLength         int            // 評価を行うブロック長の最小値
@@ -17,21 +18,22 @@ type Option struct {
 	Debug             bool           // ブロック情報を出力
 }
 
-func (self *Option) Initialize() {
-	self.Threashold = 100.0
-	self.MinLength = 80
-	self.DecayFactor = 0.73
-	self.ContinuousFactor = 1.62
-	self.NotBodyFactor = 0.72
-	self.PunctuationWeight = 10
-	self.Punctuations = regexp.MustCompile("([、。，．！？]|\\.[^A-Za-z0-9]|,[^0-9]|!|\\?)")
-	self.WasteExpressions = regexp.MustCompile("(?i)Copyright|All Rights Reserved")
-	self.DomSeparator = ""
-	self.Debug = false
+func (o *Option) initialize() {
+	o.Threashold = 100.0
+	o.MinLength = 80
+	o.DecayFactor = 0.73
+	o.ContinuousFactor = 1.62
+	o.NotBodyFactor = 0.72
+	o.PunctuationWeight = 10
+	o.Punctuations = regexp.MustCompile("([、。，．！？]|\\.[^A-Za-z0-9]|,[^0-9]|!|\\?)")
+	o.WasteExpressions = regexp.MustCompile("(?i)Copyright|All Rights Reserved")
+	o.DomSeparator = ""
+	o.Debug = false
 }
 
+// NewOption initialize option
 func NewOption() (o *Option) {
 	o = &Option{}
-	o.Initialize()
+	o.initialize()
 	return
 }

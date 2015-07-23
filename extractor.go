@@ -1,41 +1,41 @@
 package gec
 
-type Extractor struct {
-	tp *TextProcessor
-	bp *BlockProcessor
+type extractor struct {
+	tp *textProcessor
+	bp *blockProcessor
 }
 
-func NewExtractor(o *Option) (e *Extractor) {
-	tp := NewTextProcessor(o)
-	bp := NewBlockProcessor(o, tp)
-	return &Extractor{tp: tp, bp: bp}
+func newExtractor(o *Option) (e *extractor) {
+	tp := newTextProcessor(o)
+	bp := newBlockProcessor(o, tp)
+	return &extractor{tp: tp, bp: bp}
 }
 
-func (self *Extractor) ExtractTitle(doc string) (t string) {
-	if self.tp.HasFramesetOrRedirect(doc) {
-		t = self.tp.ParseTitle(doc)
+func (e *extractor) ExtractTitle(doc string) (t string) {
+	if e.tp.HasFramesetOrRedirect(doc) {
+		t = e.tp.ParseTitle(doc)
 	} else {
-		head := self.tp.ParseHeadHTML(doc)
-		t = self.tp.ParseTitle(head)
+		head := e.tp.ParseHeadHTML(doc)
+		t = e.tp.ParseTitle(head)
 	}
 	return
 }
 
-func (self *Extractor) ExtractContent(doc string) (c string) {
-	if self.tp.HasFramesetOrRedirect(doc) {
+func (e *extractor) ExtractContent(doc string) (c string) {
+	if e.tp.HasFramesetOrRedirect(doc) {
 		c = ""
 	} else {
-		body := self.tp.ParseBodyHTML(doc)
-		body = self.tp.ParseGoogleAdsSectionTargetHTML(body)
-		body = self.tp.EliminateUselessTags(body)
+		body := e.tp.ParseBodyHTML(doc)
+		body = e.tp.ParseGoogleAdsSectionTargetHTML(body)
+		body = e.tp.EliminateUselessTags(body)
 
-		title := self.tp.ParseTitle(doc)
-		body = self.tp.ReplaceHTag(body, title)
+		title := e.tp.ParseTitle(doc)
+		body = e.tp.ReplaceHeadingTag(body, title)
 
-		for _, b := range self.tp.ParseBlock(body) {
-			self.bp.Process(b)
+		for _, b := range e.tp.ParseBlock(body) {
+			e.bp.Cluster(b)
 		}
-		c = self.bp.GetMaxScoreContent()
+		c = e.bp.GetMaxScoreContent()
 	}
 	return
 }

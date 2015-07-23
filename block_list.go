@@ -1,26 +1,26 @@
 package gec
 
-type BlockList []*Block
+type blockList []*block
 
-func (self BlockList) Len() int {
-	return len(self)
+func (bl blockList) Len() int {
+	return len(bl)
 }
 
-func (self BlockList) Swap(i, j int) {
-	self[i], self[j] = self[j], self[i]
+func (bl blockList) Swap(i, j int) {
+	bl[i], bl[j] = bl[j], bl[i]
 }
 
-func (self BlockList) Less(i, j int) bool {
-	return self[i].Score < self[j].Score
+func (bl blockList) Less(i, j int) bool {
+	return bl[i].Score < bl[j].Score
 }
 
-func NewBlockList() (bl BlockList) {
-	bl = BlockList{}
-	bl = append(bl, NewBlock("", 0.0))
+func newBlockList() (bl blockList) {
+	bl = blockList{}
+	bl = append(bl, newBlock("", 0.0))
 	return
 }
 
-func (self BlockList) AppendBlock() (bl BlockList) {
-	self = append(self, NewBlock("", 0.0))
-	return self
+func (bl blockList) AppendBlock() blockList {
+	bl = append(bl, newBlock("", 0.0))
+	return bl
 }

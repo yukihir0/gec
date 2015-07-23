@@ -6,8 +6,8 @@ import (
 
 func TestMaxScoreContent(t *testing.T) {
 	opt := NewOption()
-	tp := NewTextProcessor(opt)
-	bp := NewBlockProcessor(opt, tp)
+	tp := newTextProcessor(opt)
+	bp := newBlockProcessor(opt, tp)
 
 	docs := []string{
 		"",
@@ -18,8 +18,8 @@ func TestMaxScoreContent(t *testing.T) {
 		"",
 	}
 
-	for i, _ := range docs {
-		bp.Process(docs[i])
+	for i := range docs {
+		bp.Cluster(docs[i])
 		actual := bp.GetMaxScoreContent()
 		if actual != expecteds[i] {
 			t.Errorf("expected %s, but got %s", expecteds[i], actual)
